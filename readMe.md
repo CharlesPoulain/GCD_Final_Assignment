@@ -2,9 +2,11 @@
 
 This is this final assignment for Getting and Cleaning Data course on Coursera.
 
-*.In order to use properly run_analysis.R, you would need to set yourself the directory with setdir().If you don't, it will take the environment of Rstudio you are currently working on.
+* In order to use properly run_analysis.R, you would need to set yourself the directory with setdir().If you don't, it will take the environment of Rstudio you are currently working on.
 
-*.The data we are looking for is dispatched in two different files. The first one is test and the second is train. Both these files contains, X file (processed data from raw data, the rows are the observations = fixed-width sliding window of 2.56 sec, the column are the features.), Y file (processed data pointing out which activity the subject was doing during the observation), subject file (linking each observation to a subject by code 1:30) and a "Inertial Signals" directory (being the pre-processed raw data). We won't use Inertial Signals data since they aren't relevant for this Assignment and we will merge train files together, then test files, then the resulting test and train files together. 
+* The data we are looking for is dispatched in two different files. The first one is test and the second is train. Both these files contains, X file (processed data from raw data, the rows are the observations = fixed-width sliding window of 2.56 sec, the column are the features.), Y file (processed data pointing out which activity the subject was doing during the observation), subject file (linking each observation to a subject by code 1:30) and a "Inertial Signals" directory (being the pre-processed raw data). We won't use Inertial Signals data since they aren't relevant for this Assignment and we will merge train files together, then test files, then the resulting test and train files together.
+
+* 
 
 
 #Assignment Instructions
@@ -20,10 +22,10 @@ https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Datas
 
 You should create one R script called run_analysis.R that does the following.
 
-1.Merges the training and the test sets to create one data set.
-2.Extracts only the measurements on the mean and standard deviation for each measurement.
-3.Uses descriptive activity names to name the activities in the data set
-4.Appropriately labels the data set with descriptive variable names.
-5.From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+1 Merges the training and the test sets to create one data set.
+2 Extracts only the measurements on the mean and standard deviation for each measurement.
+3 Uses descriptive activity names to name the activities in the data set
+4 Appropriately labels the data set with descriptive variable names.
+5 From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
 
 Good luck!
