@@ -42,7 +42,7 @@ run_analysis <- function(){
     ## turn activities $ subjects into factor : label activities
     merged_data$subject<-as.factor(merged_data$subject)
     
-    labels_path<-paste(dir_path,"activity_labels.txt",sep="/")
+    labels_path<-paste(data_path,"activity_labels.txt",sep="/")
     activity_labels<-read.table(labels_path)
     activity_labels[,2]<-as.character(activity_labels[,2])
     merged_data$activity<-factor(merged_data$activity,levels=activity_labels[,1],labels=activity_labels[,2])
@@ -50,14 +50,15 @@ run_analysis <- function(){
     
     ## select features with mean and std
     selected_features<-features_names[grepl("mean\\(\\)|std\\(\\)",features_names)]
-    selected_data<-merged_data[,c("subject","activity",selected_features)]
+    col_to_select<-c("subject","activity",selected_features)
+    selected_data<-subset(merged_data,select=col_to_select)
     
     ## write tidy data set with mean for each features for each subject and activity
     selected_data_melted<-melt(selected_data,id=c("subject","activity"))
     selected_data_mean<-dcast(selected_data_melted,subject+activity~variable,mean)
     
     write.table(selected_data_mean,"tidy.txt",row.names = FALSE,quote = FALSE)
-    return(list(merged_data,selected_data))
+    return(list(merged_data,selected_data,col_to_select))
 }
 
 loadData <-function(){
