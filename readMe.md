@@ -6,7 +6,7 @@ This is this final assignment for Getting and Cleaning Data course on Coursera.
 
 * The data we are looking for is dispatched in two different files. The first one is **test** and the second is **train**. Both these files contains, **X file** (processed data from raw data, the rows are the observations = fixed-width sliding window of 2.56 sec, the column are the features.), **Y file** (processed data pointing out which activity the subject was doing during the observation), **subject file** (linking each observation to a subject by code 1:30) and a **"Inertial Signals" directory** (being the pre-processed raw data). We won't use Inertial Signals data since they aren't relevant for this Assignment and we will merge train files together, then test files, then the resulting test and train files together.
 
-* 
+* How to use run_analysis ? Simply source and run_analysis(). You might want to affect run_analysis in a variable name since it returns a list containing the merged_data, the selected_data and the names of the columns of the selected_data.
 
 
 #Assignment Instructions
