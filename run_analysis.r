@@ -49,7 +49,7 @@ run_analysis <- function(){
     setkey(merged_data,"subject","activity")
     
     ## select features with mean and std
-    selected_features<-features_names[grepl("mean\\(\\)|std\\(\\)",features_names)]
+    selected_features<-features_names[grepl("*.mean.*|*.std.*",features_names)]
     col_to_select<-c("subject","activity",selected_features)
     selected_data<-subset(merged_data,select=col_to_select)
     
