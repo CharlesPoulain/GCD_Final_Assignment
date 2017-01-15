@@ -10,6 +10,7 @@ This is this final assignment for Getting and Cleaning Data course on Coursera.
 
 ##Analysis
 * check if packages are installed and sourced
+
         packages<-c("data.table","dplyr")
             ipak(packages)
 
@@ -17,6 +18,7 @@ This is this final assignment for Getting and Cleaning Data course on Coursera.
             data_path<-paste(getwd(),"UCI HAR Dataset", sep="/")
 
 * load data
+
         if(!dir.exists(data_path)){
                 loadData()
         }
@@ -31,6 +33,7 @@ This is this final assignment for Getting and Cleaning Data course on Coursera.
         }
 
 * merging test and train data
+
         ## getting train data
         train_path<-paste(data_path,"train",sep="/")
 
@@ -51,16 +54,19 @@ This is this final assignment for Getting and Cleaning Data course on Coursera.
         merged_data<-rbind(train_data,test_data)
 
 * Getting features.txt
+
         features_path<-paste(data_path,"features.txt",sep="/")
         features<-read.table(features_path)
         features[,2]<-as.character(features[,2]) ##to avoid further issues
 
-* Label variables names of data         
+* Label variables names of data
+
         features_names<-features[,2]
         colnames(merged_data)<- c("subject","activity",features_names)
         merged_data<-data.table(merged_data)
 
 * Label activities thanks to the factor : levels-labels interaction
+        
         merged_data$subject<-as.factor(merged_data$subject)
 
         labels_path<-paste(data_path,"activity_labels.txt",sep="/")
@@ -70,11 +76,13 @@ This is this final assignment for Getting and Cleaning Data course on Coursera.
         setkey(merged_data,"subject","activity")
 
 * Select mean and std features 
+        
         selected_features<-features_names[grepl("*.mean.*|*.std.*",features_names)]
         col_to_select<-c("subject","activity",selected_features)
         selected_data<-subset(merged_data,select=col_to_select)
 
 * write the tidy data set showing the mean of each variable per subject and activity
+        
         selected_data_melted<-melt(selected_data,id=c("subject","activity"))
         selected_data_mean<-dcast(selected_data_melted,subject+activity~variable,mean)
 
