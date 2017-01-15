@@ -1,16 +1,5 @@
-main <- function(){
-    # ipak function: install and load multiple R packages.
-    # check to see if packages are installed. Install them if they are not, then load them into the R session.
-    
-    ## credit to stevenworthington for the ipak function
-    ipak <- function(pkg){
-        new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
-        if (length(new.pkg)) 
-            install.packages(new.pkg, dependencies = TRUE)
-        sapply(pkg, require, character.only = TRUE)
-    }
-    
-    packages<-c("data.table")
+run_analysis <- function(){
+    packages<-c("data.table","dplyr")
     ipak(packages)
     
     ## set data path
@@ -20,7 +9,55 @@ main <- function(){
     if(!dir.exists(data_path)){
         loadData()
     }
-    dt<-mergeData(data_path)
+    
+    ## getting train data
+    train_path<-paste(data_path,"train",sep="/")
+    
+    subject_train<-read.table(paste(train_path,"subject_train.txt",sep="/"))
+    activity_train<-read.table(paste(train_path,"y_train.txt",sep="/"))
+    measures_train<-read.table(paste(train_path,"X_train.txt",sep="/"))
+    train_data<-cbind(subject_train,activity_train,measures_train)
+    
+    ## getting test data
+    test_path<-paste(data_path,"test",sep="/")
+    
+    subject_test<-read.table(paste(test_path,"subject_test.txt",sep="/"))
+    activity_test<-read.table(paste(test_path,"y_test.txt",sep="/"))
+    measures_test<-read.table(paste(test_path,"X_test.txt",sep="/"))
+    test_data<-cbind(subject_test,activity_test,measures_test)
+    
+    ## merging both data set together
+    merged_data<-rbind(train_data,test_data)
+    
+    ## getting features data
+    features_path<-paste(data_path,"features.txt",sep="/")
+    features<-read.table(features_path)
+    features[,2]<-as.character(features[,2]) ##to avoid further issues
+    
+    ## label variables of merged data
+    features_names<-features[,2]
+    colnames(merged_data)<- c("subject","activity",features_names)
+    merged_data<-data.table(merged_data)
+    
+    ## turn activities $ subjects into factor : label activities
+    merged_data$subject<-as.factor(merged_data$subject)
+    
+    labels_path<-paste(dir_path,"activity_labels.txt",sep="/")
+    activity_labels<-read.table(labels_path)
+    activity_labels[,2]<-as.character(activity_labels[,2])
+    merged_data$activity<-factor(merged_data$activity,levels=activity_labels[,1],labels=activity_labels[,2])
+    setkey(merged_data,"subject","activity")
+    
+    ## select features with mean and std
+    selected_features<-features_names[grepl("mean\\(\\)|std\\(\\)",features_names)]
+    selected_data<-merged_data[,c("subject","activity",selected_features)]
+    
+    ## write tidy data set with mean for each features for each subject and activity
+    selected_data_melted<-melt(selected_data,id=c("subject","activity"))
+    selected_data_mean<-dcast(selected_data_melted,subject+activity~variable,mean)
+    
+    write.table(selected_data_mean,"tidy.txt",row.names = FALSE,quote = FALSE)
+    return(list(merged_data,selected_data))
 }
 
 loadData <-function(){
@@ -32,40 +69,16 @@ loadData <-function(){
     ##the files are now available in the directory "UCI HAR Dataset"
 }
 
-mergeData <-function(dir_path){
-    train_path<-paste(dir_path,"train",sep="/")
+## credit to stevenworthington for the ipak function
+ipak <- function(pkg){
+    # ipak function: install and load multiple R packages.
+    # check to see if packages are installed. Install them if they are not, then load them into the R session.
     
-    subject_train<-read.table(paste(train_path,"subject_train.txt",sep="/"))
-    activity_train<-read.table(paste(train_path,"y_train.txt",sep="/"))
-    measures_train<-read.table(paste(train_path,"X_train.txt",sep="/"))
-    train_data<-cbind(measures_train,subject_train,activity_train)
-    
-    test_path<-paste(dir_path,"test",sep="/")
-    
-    subject_test<-read.table(paste(test_path,"subject_test.txt",sep="/"))
-    activity_test<-read.table(paste(test_path,"y_test.txt",sep="/"))
-    measures_test<-read.table(paste(test_path,"X_test.txt",sep="/"))
-    test_data<-cbind(measures_test,subject_test,activity_test)
-    
-    merged_data<-rbind(train_data,test_data)
-    features_path<-paste(dir_path,"features.txt",sep="/")
-    names(merged_data)<-c(as.character(read.table(features_path)[,2]),"subject","activity")
-    return(merged_data)
+    new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+    if (length(new.pkg)) 
+        install.packages(new.pkg, dependencies = TRUE)
+    sapply(pkg, require, character.only = TRUE)
 }
 
-extractFeat<-function(dir_path){
-    
-}
 
-describeActivites<-function(dir_path){
-    
-}
-
-labelDataSet<-function(dir_path){
-    
-}
-
-writeData<-function(dir_path){
-    
-}
 
